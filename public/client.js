@@ -1,3 +1,6 @@
+// P5.JS + ML5.JS PART
+//🎨🖌🖼.js + 🤖🚜🚗.js
+
 let video;
 let poseNet;
 let poses = [];
@@ -23,11 +26,33 @@ function setup() {
 
 function draw() {
   image(video, 0, 0, 200, 200);
+  drawKeypoints();
 }
 
 function modelReady(){
   console.log('it is ready ');
 }
+
+function drawKeypoints()  {
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i++) {
+    // For each pose detected, loop through all the keypoints
+    let pose = poses[i].pose;
+    for (let j = 0; j < pose.keypoints.length; j++) {
+      // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+      let keypoint = pose.keypoints[j];
+      // Only draw an ellipse is the pose probability is bigger than 0.2
+      if (keypoint.score > 0.2) {
+        fill(255, 0, 0);
+        noStroke();
+        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
+      }
+    }
+  }
+}
+
+// THREE.JS PART
+//🌳🌲🌴🎄.js
 
 var scene = new THREE.Scene();
 var cam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);

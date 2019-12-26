@@ -8,6 +8,9 @@ let poses = [];
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent('p5Div');
+  fill('white');
+  textSize(32);
+  text('What’s going on here? 3D cube is rotati', width / 2.6, 30, 400, 200);
   fill('red');
   ellipse(width / 2, height / 2, 80, 80);
   video = createCapture(VIDEO);

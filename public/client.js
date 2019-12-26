@@ -1,42 +1,33 @@
-// client-side js
-// run by the browser each time your view template is loaded
+function setup() {
+  var canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent('p5Div');
+  fill('red');
+  ellipse(width / 2, height / 2, 80, 80);
+}
 
-console.log("hello world :o");
+var scene = new THREE.Scene();
+var cam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-// our default array of dreams
-const dreams = [
-  "Find and count some sheep",
-  "Climb a really tall mountain",
-  "Wash the dishes"
-];
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-// define variables that reference elements on our page
-const dreamsList = document.getElementById("dreams");
-const dreamsForm = document.forms[0];
-const dreamInput = dreamsForm.elements["dream"];
-
-// a helper function that creates a list item for a given dream
-const appendNewDream = function(dream) {
-  const newListItem = document.createElement("li");
-  newListItem.innerHTML = dream;
-  dreamsList.appendChild(newListItem);
-};
-
-// iterate through every dream and add it to our page
-dreams.forEach(function(dream) {
-  appendNewDream(dream);
+var geometry = new THREE.BoxGeometry(1, 1, 1);
+var material = new THREE.MeshBasicMaterial({
+  color: 0xCE03AE
 });
+var cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
 
-// listen for the form to be submitted and add a new dream when it is
-dreamsForm.onsubmit = function(event) {
-  // stop our form submission from refreshing the page
-  event.preventDefault();
+cam.position.z = 5;
 
-  // get dream value and add it to the list
-  dreams.push(dreamInput.value);
-  appendNewDream(dreamInput.value);
+var render = function() {
+  requestAnimationFrame(render);
 
-  // reset form
-  dreamInput.value = "";
-  dreamInput.focus();
+  cube.rotation.x += 0.02;
+  cube.rotation.y += 0.05;
+
+  renderer.render(scene, cam);
 };
+
+render();

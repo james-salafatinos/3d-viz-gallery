@@ -8,6 +8,13 @@ const app = express();
 // we've started you off with Express,
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
 
+//set https
+app.set('trust proxy', true); // <- required
+app.use((req, res, next) => {
+  if(!req.secure) return res.redirect('https://' + req.get('host') + req.url);
+  next();
+});
+
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
 

@@ -9,8 +9,8 @@ function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent('p5Div');
   fill('white');
-  textSize(32);
-  text('What’s going on here? 3D cube is rotati', width / 2.6, 30, 400, 200);
+  textSize(25);
+  text('What’s going on here? p5.js is accessing your web camera, drawing the big red ellipse in the center of the screen. 3D cube is rotating with three.js. ML5.js is detecting your body parts (you can find)', width / 2.9, 30, 500, 200);
   fill('red');
   ellipse(width / 2, height / 2, 80, 80);
   video = createCapture(VIDEO);

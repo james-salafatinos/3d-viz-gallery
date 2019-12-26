@@ -1,8 +1,30 @@
+let video;
+let poseNet;
+let poses = [];
+
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent('p5Div');
   fill('red');
   ellipse(width / 2, height / 2, 80, 80);
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  
+  // Create a new poseNet method with a single detection
+  poseNet = ml5.poseNet(video, modelReady);
+  // This sets up an event that fills the global variable "poses"
+  // with an array every time new poses are detected
+  poseNet.on("pose", function(results) {
+    poses = results;
+  });
+}
+
+function draw() {
+  image(video, 0, 0, 200, 200);
+}
+
+function modelReady(){
+  console.log('it is ready ');
 }
 
 var scene = new THREE.Scene();

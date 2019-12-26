@@ -16,7 +16,9 @@ function setup() {
   // with an array every time new poses are detected
   poseNet.on("pose", function(results) {
     poses = results;
+    console.log(poses);
   });
+  video.hide();
 }
 
 function draw() {

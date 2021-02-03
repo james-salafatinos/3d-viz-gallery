@@ -75,7 +75,7 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var geometry = new THREE.BoxGeometry(100, 1, 1);
+var geometry = new THREE.BoxGeometry(2.5, 1, 1);
 var material = new THREE.MeshBasicMaterial({
   color: 0xce03ae
 });
@@ -88,7 +88,7 @@ var render = function() {
   requestAnimationFrame(render);
 
   cube.rotation.x += 0.02;
-  cube.rotation.y += 0.05;
+  cube.rotation.y += 0.02;
 
   renderer.render(scene, cam);
 };

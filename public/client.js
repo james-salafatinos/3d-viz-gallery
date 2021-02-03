@@ -7,15 +7,21 @@ let poses = [];
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
-  canvas.parent('p5Div');
-  fill('white');
+  canvas.parent("p5Div");
+  fill("white");
   textSize(25);
-  text('What’s going on here? p5.js is accessing your web camera, drawing the big red ellipse in the center of the screen. 3D cube is rotating with three.js. ML5.js with TensorFlow.js’s PoseNet model is detecting your body parts (view console to see results). P5.js is drawing your movements with small red spots.', width / 3.2, 30, 600, 1000);
-  fill('red');
+  text(
+    "What’s going on here? p5.js is accessing your web camera, drawing the big red ellipse in the center of the screen. 3D cube is rotating with three.js. ML5.js with TensorFlow.js’s PoseNet model is detecting your body parts (view console to see results). P5.js is drawing your movements with small red spots.",
+    width / 3.2,
+    30,
+    600,
+    1000
+  );
+  fill("red");
   ellipse(width / 2, height / 2, 80, 80);
   video = createCapture(VIDEO);
   video.size(width, height);
-  
+
   // Create a new poseNet method with a single detection
   poseNet = ml5.poseNet(video, modelReady);
   // This sets up an event that fills the global variable "poses"
@@ -32,11 +38,11 @@ function draw() {
   drawKeypoints();
 }
 
-function modelReady(){
-  console.log('it is ready ');
+function modelReady() {
+  console.log("it is ready ");
 }
 
-function drawKeypoints()  {
+function drawKeypoints() {
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
@@ -58,15 +64,20 @@ function drawKeypoints()  {
 //🌳🌲🌴🎄.js
 
 var scene = new THREE.Scene();
-var cam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var cam = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var geometry = new THREE.BoxGeometry(1, 1, 1);
+var geometry = new THREE.BoxGeometry(100, 1, 1);
 var material = new THREE.MeshBasicMaterial({
-  color: 0xCE03AE
+  color: 0xce03ae
 });
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);

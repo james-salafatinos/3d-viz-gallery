@@ -9,61 +9,27 @@ import * as THREE from 'https://cdn.skypack.dev/three';
 import { OrbitControls }from 'https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls'
 
 console.log("HELLO", THREE, OrbitControls)
-
-
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
 
+import { lights } from "./_lights.js";
+Object.entries(lights).forEach((element) => {
+  scene.add(element[1]);
+});
 
 
-const pointLight = new THREE.PointLight(0x0000ff, .5, 1); //color, strength, falloff
-// pointLight.color = new THREE.Color(0x0000ff);
-pointLight.position.set(1, -.5, 1);
-scene.add(pointLight);
-
-const hemiLight = new THREE.HemisphereLight(0xff00ff, 0xff0000, .3);
-hemiLight.color = new THREE.Color(0x0000ff);
-scene.add(hemiLight);
-
-const directionalLight = new THREE.DirectionalLight(0xccf00c, .3);
-directionalLight.position.set(.5, .25, .25);
-scene.add(directionalLight)
-
-const rectAreaLight = new THREE.RectAreaLight(0x0000ff, 1, 2, 2); //color, intensity, w, h
-//rectarea only works with mesh standard or mesh physical mats
-rectAreaLight.position.set(-1, 1.25, -1);
-rectAreaLight.lookAt(new THREE.Vector3())
-scene.add(rectAreaLight)
-
-
-const spotLight = new THREE.SpotLight(0x00ff00, 3, 5, Math.PI * .1, .01, 1); //color, intensity, w
-spotLight.position.set(0, 2, 3);
-// you can use look at for spotlight!!
-spotLight.target.position.x = -.75;
-scene.add(spotLight.target)
-scene.add(spotLight)
-
-
-//helpers
-const hemisphereLightHelper = new THREE.HemisphereLightHelper(hemiLight, .2)
-const directionalHelper = new THREE.DirectionalLightHelper(directionalLight, .2)
-const pointLightHelper = new THREE.PointLightHelper(pointLight, .2)
-const spotLightHelper = new THREE.SpotLightHelper(spotLight, .2)
-
-scene.add(hemisphereLightHelper, directionalHelper, pointLightHelper, spotLightHelper)
-
-window.requestAnimationFrame(()=>{
-    spotLightHelper.update()
-})
-
-
-/**
- * Objects
- */
-// Material
+import { items } from "./_items.js";
+Object.entries(items).forEach((element) => {
+  console.log(element[1])
+  scene.add(element[1]);
+});
+// /**
+//  * Objects
+//  */
+// // Material
 const material = new THREE.MeshStandardMaterial()
 material.roughness = 0.4
 

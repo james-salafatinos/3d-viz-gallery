@@ -1,4 +1,5 @@
 import * as THREE from 'https://cdn.skypack.dev/three';
+
 let createIso = function () {
   let scale = { x: 6, y: 6, z: 6 };
   let pos = { x: 15, y: scale.y / 2, z: -15 };

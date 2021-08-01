@@ -33,15 +33,15 @@ var score = 0;
 let distributeStars = function() {
   const vertices = [];
   for (let i = 0; i < 20; i++) {
-    const x = THREE.MathUtils.randFloatSpread(200);
-    const y = THREE.MathUtils.randFloatSpread(200);
-    const z = THREE.MathUtils.randFloatSpread(200);
+    const x = THREE.MathUtils.randFloatSpread(100);
+    const y = THREE.MathUtils.randFloatSpread(100);
+    const z = THREE.MathUtils.randFloatSpread(100);
     console.log(x, y, z);
     vertices.push(x, y, z);
     V.push(x, y, z);
   }
 
-  const geometry = new THREE.BufferGeometry();
+  const geometry = new THREE.BufferGeometry(.1);
   geometry.setAttribute(
     "position",
     new THREE.Float32BufferAttribute(vertices, 3)
@@ -57,38 +57,31 @@ let distributeStars = function() {
 const stars = distributeStars();
 scene.add(stars);
 
-let nextStars = function(vertices) {
-  let newVertices = [];
-  for (let i = 0; i < vertices.length; i++) {
-    const dx = THREE.MathUtils.randFloatSpread(2);
-    newVertices.push(vertices[i] + dx);
-    V[i] = vertices[i] + dx;
-  }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(newVertices, 3)
-  );
-  const color = new THREE.Color(`hsl(${30 + stack.length * 0.2}, 100%, 50%)`);
-  const material = new THREE.PointsMaterial({ color });
+// let nextStars = function(vertices) {
+//   let newVertices = [];
+//   for (let i = 0; i < vertices.length; i++) {
+//     const dx = THREE.MathUtils.randFloatSpread(15);
+//     newVertices.push(vertices[i] + dx);
+//     V[i] = vertices[i] + dx;
+//   }
+//   const geometry = new THREE.BufferGeometry();
+//   geometry.setAttribute(
+//     "position",
+//     new THREE.Float32BufferAttribute(newVertices, 3)
+//   );
+//   const color = new THREE.Color(`hsl(${30 + stack.length * 0.2}, 100%, 50%)`);
+//   const material = new THREE.PointsMaterial({ color });
 
-  const points = new THREE.Points(geometry, material);
-  return points;
-};
+//   const points = new THREE.Points(geometry, material);
+//   return points;
+// };
 
 
-let moveStars = function(vertices) {
-  let newVertices = [];
-  for (let i = 0; i < vertices.length; i++) {
-    const dx = THREE.MathUtils.randFloatSpread(2);
-    V[i] = vertices[i] + dx;
-  }
-  
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(newVertices, 3)
-  );
+function updateStars(){
+  console.log("Scene:", scene)
+}
+
+
 
 /**
  * Sizes
@@ -152,11 +145,12 @@ var animate = function() {
   controls.update();
 
   // console.log(nextStars(V));
-  scene.add(nextStars(V));
+  // scene.add(nextStars(V));
   stack.push(1);
-  console.log("scene", scene.children[scene.children.length-1].geometry)
-  let lastPoints = scene.children[scene.children.length-1]
-  lastPoints.geometry.dispose()
+  
+    updateStars()
+
+
 
   // Render
   renderer.render(scene, camera);

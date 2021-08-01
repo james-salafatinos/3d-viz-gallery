@@ -20,45 +20,42 @@ Object.entries(lights).forEach((element) => {
   scene.add(element[1]);
 });
 
-
 import { items } from "./_items.js";
 Object.entries(items).forEach((element) => {
   console.log(element[1])
   scene.add(element[1]);
 });
-// /**
-//  * Objects
-//  */
-// // Material
-const material = new THREE.MeshStandardMaterial()
-material.roughness = 0.4
 
-// Objects
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 32, 32),
-    material
-)
-sphere.position.x = - 1.5
 
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(0.75, 0.75, 0.75),
-    material
-)
+var V = [];
+let stack = [];
+var score = 0;
 
-const torus = new THREE.Mesh(
-    new THREE.TorusGeometry(0.3, 0.2, 32, 64),
-    material
-)
-torus.position.x = 1.5
+let distributeStars = function () {
+  const vertices = [];
+  for (let i = 0; i < 500; i++) {
+    const x = THREE.MathUtils.randFloatSpread(200);
+    const y = THREE.MathUtils.randFloatSpread(200);
+    const z = THREE.MathUtils.randFloatSpread(200);
+    console.log(x, y, z);
+    vertices.push(x, y, z);
+    V.push(x, y, z);
+  }
 
-const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(5, 5),
-    material
-)
-plane.rotation.x = - Math.PI * 0.5
-plane.position.y = - 0.65
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(vertices, 3)
+  );
+  const color = new THREE.Color(`hsl(${30 + stack.length * 4}, 100%, 50%)`);
+  const material = new THREE.PointsMaterial({ color });
 
-scene.add(sphere, cube, torus, plane)
+  const points = new THREE.Points(geometry, material);
+
+  return points;
+};
+scene.add(distributeStars())
+
 
 /**
  * Sizes
@@ -87,7 +84,7 @@ window.addEventListener('resize', () =>
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000)
 camera.position.x = 1
 camera.position.y = 1
 camera.position.z = 2
@@ -114,15 +111,6 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-
-    // Update objects
-    sphere.rotation.y = 0.1 * elapsedTime
-    cube.rotation.y = 0.1 * elapsedTime
-    torus.rotation.y = 0.1 * elapsedTime
-
-    sphere.rotation.x = 0.15 * elapsedTime
-    cube.rotation.x = 0.15 * elapsedTime
-    torus.rotation.x = 0.15 * elapsedTime
 
     // Update controls
     controls.update()

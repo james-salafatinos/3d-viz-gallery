@@ -27,19 +27,19 @@ Object.entries(items).forEach((element) => {
 });
 
 
-var starPositions = [];
-let stack = [];
+var V = [];
+var stack = [];
 var score = 0;
 
 let distributeStars = function () {
   const vertices = [];
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 20; i++) {
     const x = THREE.MathUtils.randFloatSpread(200);
     const y = THREE.MathUtils.randFloatSpread(200);
     const z = THREE.MathUtils.randFloatSpread(200);
     console.log(x, y, z);
     vertices.push(x, y, z);
-    starPositions.push(x, y, z);
+    V.push(x, y, z);
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -54,19 +54,34 @@ let distributeStars = function () {
 
   return points;
 };
-scene.add(distributeStars())
 
 
 
 
-let calculateGravity = function(starPositions, G){
-  let newStarPositions = []
-  for (let i = 0; i < starPoisitions.length; i++) {
-    newStarPositions.push(starPositions[i]+.1)
+
+
+let nextStars = function(vertices){
+  let newVertices = []
+  for (let i = 0; i < vertices.length; i++) {
+    const dx = THREE.MathUtils.randFloatSpread(2)
+    newVertices.push(vertices[i]+ dx)
+    V[i] = vertices[i] + dx
     
+   
   }
-  
+const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(newVertices, 3)
+  );
+  const color = new THREE.Color(`hsl(${30 + stack.length * 0.2}, 100%, 50%)`);
+  const material = new THREE.PointsMaterial({ color });
+
+  const points = new THREE.Points(geometry, material);
+
+  return points;
 }
+
 
 
 /**
@@ -127,11 +142,10 @@ const tick = () =>
     // Update controls
     controls.update()
   
-  
-    let newStarPositions = calculateGravity(starPositions, 9.8)
-    starPositions = newStarPositions
-  
-    console.log(newStarPositions)
+    console.log(nextStars(V))
+    scene.add(nextStars(V))
+    // stack.push(1)
+
 
 
     // Render

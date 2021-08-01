@@ -27,7 +27,7 @@ Object.entries(items).forEach((element) => {
 });
 
 
-var V = [];
+var starPositions = [];
 let stack = [];
 var score = 0;
 
@@ -39,7 +39,7 @@ let distributeStars = function () {
     const z = THREE.MathUtils.randFloatSpread(200);
     console.log(x, y, z);
     vertices.push(x, y, z);
-    V.push(x, y, z);
+    starPositions.push(x, y, z);
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -55,6 +55,18 @@ let distributeStars = function () {
   return points;
 };
 scene.add(distributeStars())
+
+
+
+
+let calculateGravity = function(starPositions, G){
+  let newStarPositions = []
+  for (let i = 0; i < starPoisitions.length; i++) {
+    newStarPositions.push(starPositions[i]+.1)
+    
+  }
+  
+}
 
 
 /**
@@ -114,6 +126,13 @@ const tick = () =>
 
     // Update controls
     controls.update()
+  
+  
+    let newStarPositions = calculateGravity(starPositions, 9.8)
+    starPositions = newStarPositions
+  
+    console.log(newStarPositions)
+
 
     // Render
     renderer.render(scene, camera)

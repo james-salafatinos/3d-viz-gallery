@@ -23,11 +23,10 @@ let createIso = function () {
   return mesh;
 };
 
-
 let createPlane = function () {
 
   const geometry =
-    new THREE.PlaneGeometry(5, 5);
+    new THREE.PlaneBufferGeometry(5, 5);
   const material = new THREE.MeshBasicMaterial({
     color: 0x1e81b0,
     wireframe: false,
@@ -35,19 +34,15 @@ let createPlane = function () {
 
   const mesh = new THREE.Mesh(geometry, material);
   
-    
-  mesh.rotation.x = - Math.PI * 0.5
-  mesh.position.y = - 0.65
-
-
+  mesh.material.side = THREE.DoubleSide;
+  mesh.rotation.x += Math.PI *.5
   mesh.castShadow = true;
   mesh.receiveShadow = true;
 
-  mesh.userData.draggable = false;
+  mesh.userData.draggable = true;
   mesh.userData.name = "Plane";
   return mesh;
 };
-
 
 
 

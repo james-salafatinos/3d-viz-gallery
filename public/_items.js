@@ -23,6 +23,35 @@ let createIso = function () {
   return mesh;
 };
 
+
+let createPlane = function () {
+
+  const geometry =
+    new THREE.PlaneGeometry(5, 5);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x1e81b0,
+    wireframe: false,
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  
+    
+  mesh.rotation.x = - Math.PI * 0.5
+  mesh.position.y = - 0.65
+
+
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+
+  mesh.userData.draggable = false;
+  mesh.userData.name = "Plane";
+  return mesh;
+};
+
+
+
+
 export let items = {
   iso: createIso(),
+  plane: createPlane()
 };

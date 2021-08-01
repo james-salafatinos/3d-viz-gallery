@@ -76,6 +76,20 @@ let nextStars = function(vertices) {
   return points;
 };
 
+
+let moveStars = function(vertices) {
+  let newVertices = [];
+  for (let i = 0; i < vertices.length; i++) {
+    const dx = THREE.MathUtils.randFloatSpread(2);
+    V[i] = vertices[i] + dx;
+  }
+  
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(newVertices, 3)
+  );
+
 /**
  * Sizes
  */

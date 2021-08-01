@@ -57,24 +57,24 @@ let distributeStars = function() {
 const stars = distributeStars();
 scene.add(stars);
 
-// let nextStars = function(vertices) {
-//   let newVertices = [];
-//   for (let i = 0; i < vertices.length; i++) {
-//     const dx = THREE.MathUtils.randFloatSpread(15);
-//     newVertices.push(vertices[i] + dx);
-//     V[i] = vertices[i] + dx;
-//   }
-//   const geometry = new THREE.BufferGeometry();
-//   geometry.setAttribute(
-//     "position",
-//     new THREE.Float32BufferAttribute(newVertices, 3)
-//   );
-//   const color = new THREE.Color(`hsl(${30 + stack.length * 0.2}, 100%, 50%)`);
-//   const material = new THREE.PointsMaterial({ color });
+let nextStars = function(vertices) {
+  let newVertices = [];
+  for (let i = 0; i < vertices.length; i++) {
+    const dx = THREE.MathUtils.randFloatSpread(15);
+    newVertices.push(vertices[i] + dx);
+    V[i] = vertices[i] + dx;
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(newVertices, 3)
+  );
+  const color = new THREE.Color(`hsl(${30 + stack.length * 0.2}, 100%, 50%)`);
+  const material = new THREE.PointsMaterial({ color });
 
-//   const points = new THREE.Points(geometry, material);
-//   return points;
-// };
+  const points = new THREE.Points(geometry, material);
+  return points;
+};
 
 
 function updateStars(){
@@ -145,10 +145,8 @@ var animate = function() {
   controls.update();
 
   // console.log(nextStars(V));
-  // scene.add(nextStars(V));
+  scene.add(nextStars(V));
   stack.push(1);
-  
-    updateStars()
 
 
 

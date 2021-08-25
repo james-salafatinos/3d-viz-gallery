@@ -1,10 +1,3 @@
-// import './style.css'
-// import * as THREE from 'three'
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-// import * as dat from 'dat.gui'
-// import { DirectionalLightHelper } from 'three'
-// import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
-
 import * as THREE from "https://cdn.skypack.dev/three";
 import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls";
 
@@ -15,67 +8,54 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
-// const axesHelper = new THREE.AxesHelper(1);
-// scene.add(axesHelper);
-
+const axesHelper = new THREE.AxesHelper(1);
+scene.add(axesHelper);
 // const gridHelper = new THREE.GridHelper(32);
 // scene.add(gridHelper);
 
 let t = .01;
-
-let wave = function(i,j,t, amplitude, humpfactor, posx, posy){
-
-  return amplitude*(1/(1+t))*Math.exp((-1/humpfactor)*
-  (-Math.sqrt((i*(1/(Math.log1p(2+t)))-posx)**2+(j*(1/(Math.log1p(2+t)))-posy)**2)+t-20 )**2)* 
-  Math.sin(Math.sqrt((i*(1/(Math.log1p(2+t)))-posx)**2+(j*(1/((Math.log1p(2+t))))-posy)**2)-t)
+let wave = function (i, j, t, amplitude, humpfactor, posx, posy, delay) {
+  return amplitude * (1 / (1 + t))
+   * Math.exp((-1 / humpfactor) *
+    (-Math.sqrt((i - posx) ** 2 + (j - posy) ** 2) + t - delay) ** 2) *
+    Math.sin(Math.sqrt((i - posx) ** 2 + (j  - posy) ** 2)*(1 / (Math.log1p(2 + t))) - t)
 }
 
-// let wave = function(i,j,t, amplitude, humpfactor, posx, posy){
-
-//   return amplitude*Math.exp((-1/humpfactor)*
-//   (-Math.sqrt((i-posx)**2+(j-posy)**2)+t-15 )**2)* 
-//   Math.sin(Math.sqrt((i-posx)**2+(j-posy)**2)+t)
+// let wave = function (i, j, t, amplitude, humpfactor, posx, posy, delay) {
+//   return amplitude * (1 / (1 + t))
+//    * Math.exp((-1 / humpfactor) *
+//     (-Math.sqrt((i * (1 / (Math.log1p(2 + t))) - posx) ** 2 + (j * (1 / (Math.log1p(2 + t))) - posy) ** 2) + t - delay) ** 2) *
+//     Math.sin(Math.sqrt((i * (1 / (Math.log1p(2 + t))) - posx) ** 2 + (j * (1 / ((Math.log1p(2 + t)))) - posy) ** 2) - t)
 // }
-// let func = function(i, j, t){
-//   // return Math.exp((-1/100)*((i+j)/2-t+20)**2) * Math.cos((i+j)/2-t+20)+ Math.exp((-1/100)*((j+t)**2)) *Math.sin(j+t)
-//   // return Math.cos(i+j+t)+ Math.sin(j+t)
-//   return 3*Math.exp((-1/20)*
-//   (-Math.sqrt((i+10)**2+(j+10)**2)+t-15 )**2)* 
-//   Math.sin(Math.sqrt((i+10)**2+(j+10)**2)+t) + 
 
-//   3*Math.exp((-1/20)*
-//   (-Math.sqrt((i-10)**2+(j-10)**2)+t-15 )**2)* 
-//   Math.sin(Math.sqrt((i-10)**2+(j-10)**2)+t) +
-//   3*Math.exp((-1/20)*
-//   (-Math.sqrt((i+15)**2+(j-15)**2)+t-15 )**2)* 
-//   Math.sin(Math.sqrt((i+15)**2+(j-15)**2)+t) +
-//   3*Math.exp((-1/20)*
-//   (-Math.sqrt((i-15)**2+(j+15)**2)+t-15 )**2)* 
-//   Math.sin(Math.sqrt((i-15)**2+(j+15)**2)+t) 
-//   // Math.exp((-1/100)*((i+j)/2-t+40)**2) * Math.cos((i+j)/2-t+40)
+var t_ = [];
+var clicks = 0;
+var click_wave_origin_xy = [];
+var to_log = true
+let func = function (i, j, t) {
+  let w1 = wave(i,j,t, 50, 100, 10,10, 20)
+  let w2 = wave(i,j,t, 25, 50, -10,-15, 20)
   
-// }
+  if (click_wave_origin_xy.length > 0) {
+    if (to_log){
+      console.log("Initial Click Wave Origin", click_wave_origin_xy[0][0]*2)
+      to_log = false
+    }
 
+    let consolidated_wave_output = 0;
+    for (let u = 1; u <= clicks; u ++) {
+      let delta = wave(i, j, t-(t_[u-1]), 25, 200, click_wave_origin_xy[u-1][0]*10, click_wave_origin_xy[u-1][1]*10, 10)
+      consolidated_wave_output += delta
+    }
+        return consolidated_wave_output
+    // return w1 + w2 + 
+    // wave(i, j, t-(t_[clicks-1]), 25, 50, click_wave_origin_xy[clicks-1][0], click_wave_origin_xy[clicks-1][1])
 
-var meta_waves = [];
-
-let func = function(i,j,t){
-  // let wave_add = 0;
-  // for ( let i = 0; i < meta_waves.length; i ++ ) {
-  //   // console.log(meta_waves[i][0])
-  //   wave_add += wave(i,j,t-elapsedTime, 50, 10, meta_waves[i][0], meta_waves[i][1])
-  // } 
-    return wave(i,j,t, 50, 100, 10,10) + 
-  wave(i,j,t, 25, 50, -10,10) + 
-  wave(i,j,t, 25, 50, -10,-15) + 
-  wave(i,j,t, 35, 200, 10,-15) //+ wave_add//+ wave(i,j,t, 35,50,0,0)
-  // return wave_add
-
-  // }
-  // return wave(i,j,t, 50, 100, 10,10) + 
-  // wave(i,j,t, 25, 50, -10,10) + 
-  // wave(i,j,t, 25, 50, -10,-15) + 
-  // wave(i,j,t, 35, 200, 10,-15)
+    //MW.reduce((a, b) => a + b, 0)
+  }
+  else {
+    return w1 + w2
+  }
 }
 
 
@@ -131,98 +111,92 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-document.addEventListener('mousemove', animateY)
-let mouseY = 0;
+function onMouseMove(event) {
 
-function animateY(event) {
-  mouseY = event.clientY
-}
+  // calculate mouse position in normalized device coordinates
+  // (-1 to +1) for both components
 
-document.addEventListener('mousemove', animateX)
-let mouseX = 0;
-
-function animateX(event) {
-  mouseX = event.clientX
-}
-
-
-function onMouseMove( event ) {
-
-	// calculate mouse position in normalized device coordinates
-	// (-1 to +1) for both components
-
-	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
 }
 
-const raycaster = new THREE.Raycaster();
-raycaster.params.Points.threshold = .1;
-const mouse = new THREE.Vector2();
+window.addEventListener('dblclick', function (event) {
+  console.log("In Double Click")
+  var mouse = { x: 1, y: 1 };
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-let drawBox = function(event){
+  var raycaster = new THREE.Raycaster();
 
-  // update the picking ray with the camera and mouse position
-	raycaster.setFromCamera( mouse, camera );
+  raycaster.params.Points.threshold = .05;
+  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+  raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
 
-	// calculate objects intersecting the picking ray
-	const intersects = raycaster.intersectObjects( scene.children );
-  // console.log(intersects)
-  let intsct_z = intersects[0].point.x * 100;
-  let intsct_x = intersects[0].point.y * 100;
-  let intsct_y = intersects[0].point.z * 100;
-  console.log('x', intsct_x)
-  console.log('y', intsct_y)
-  console.log('z', intsct_z)
-  console.log([intsct_x,intsct_z])
-  meta_waves.push([intsct_x, intsct_y])
- 
-  return null
+  var intersects = raycaster.intersectObjects(scene.children);
 
+  if (intersects.length > 0) {
+    // console.log("# Points intersected", intersects.length)
+    // console.log("In Intersects, first intersection: ", intersects[0])
+    // // console.log("Pushing X,Y", intersects[0].point.x, intersects[0].point.y)
+    console.log("Pushing X,Y,Z", intersects[0].point.x, intersects[0].point.y, intersects[0].point.z)
+    click_wave_origin_xy.push([intersects[0].point.x, intersects[0].point.z])
+  
+    
+    //Box
+    let g = new THREE.BoxBufferGeometry()
+    let matt = new THREE.MeshBasicMaterial()
+    let meshh = new THREE.Mesh(g, matt)
+    meshh.position.x = intersects[0].point.x
+    meshh.position.z = intersects[0].point.z
+    scene.add(meshh)
+    
+    t_.push(T)
+    clicks +=1;
+    console.log("Clicks", clicks)
+    console.log("Meta Waves", click_wave_origin_xy)
+    console.log('Stack Length', t_)
+    console.log('T', T)
+
+
+  } else {
+    // do nothing
+  }
 }
+)
 
-document.addEventListener('click', drawBox)
 
 /**
  * Animate
  */
 const clock = new THREE.Clock();
-
+var T = 0;
 let id_stack = []
 var animate = function () {
   const elapsedTime = clock.getElapsedTime();
-
-
-
-  // Update controls
+  T = elapsedTime*3
   controls.update();
-
+  //Re-draw
   let M = 64
   let N = 64
   let scaler = 10;
   let vertices = [];
-   for (let x = -M; x <= M ; x += 1) {
-      for (let z = -N; z <= N; z += 1) {
-  
-        vertices.push(x/scaler,1.4*func(x,z,elapsedTime*3)/scaler,z/scaler)
-  
-      }
-     }
+  for (let x = -M; x <= M; x += 1) {
+    for (let z = -N; z <= N; z += 1) {
+      vertices.push(x / scaler, 1.4 * func(x, z, T) / scaler, z / scaler)
+    }
+  }
+
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-  
-  let material = new THREE.PointsMaterial( { size: .02, sizeAttenuation: true, alphaTest: 0.5, transparent: true } );
-  material.color.setHSL( .6, 0.8, 0.9 );
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  let material = new THREE.PointsMaterial({ size: .02, sizeAttenuation: true, alphaTest: 0.5, transparent: true });
+  material.color.setHSL(.6, 0.8, 0.9);
   // const color = new THREE.Color(`hsl(${id_stack.length*4}, 50%, 40%)`);
   // material.color = color
-  const particles = new THREE.Points( geometry, material );
-  // console.log(vertices)
-  scene.add( particles );
- 
-  var selectedObject = scene.getObjectById(id_stack.length+8);
-  // console.log(selectedObject)
-  // console.log(scene)
-  scene.remove( selectedObject );
+  const particles = new THREE.Points(geometry, material);
+  scene.add(particles);
+  var selectedObject = scene.getObjectById(id_stack.length + 11);
+  scene.remove(selectedObject);
   id_stack.push(1)
 
 
@@ -234,7 +208,7 @@ var animate = function () {
 
 
 
-    // Render
+  // Render
   renderer.render(scene, camera);
 
   // Call tick again on the next frame

@@ -21,12 +21,16 @@ app.use(express.static("public"));
 
 
 app.get("/", function(request, response) {
-  response.sendFile(__dirname + "/views/index.html");
+  response.sendFile(__dirname + "/views/homepage.html");
 });
 
-app.get("/viz1", function(request, response) {
-  response.sendFile(__dirname + "/views/viz1.html");
+app.get("/wave-touch", function(request, response) {
+  response.sendFile(__dirname + "/views/wave-touch.html");
 });
+app.get("/balls-in-a-spaceship", function(request, response) {
+  response.sendFile(__dirname + "/views/balls-in-a-spaceship.html");
+});
+
 
 //Listening with a link
 app.listen(port, () => {

@@ -76,13 +76,14 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.x = 0;
-camera.position.y = 3;
-camera.position.z = -.5;
-camera.lookAt(0,0,0)
+camera.position.x = 1;
+camera.position.y = 1;
+camera.position.z = 2;
 scene.add(camera);
 
-
+// Controls
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 
 /**
  * Renderer
@@ -118,7 +119,13 @@ window.addEventListener('click', function (event) {
   if (intersects.length > 0) {
     console.log("Pushing X,Y,Z", intersects[0].point.x, intersects[0].point.y, intersects[0].point.z)
     click_wave_origin_xy.push([intersects[0].point.x, intersects[0].point.z])
-
+    //Sphere
+    let g = new THREE.SphereBufferGeometry()
+    let matt = new THREE.MeshBasicMaterial()
+    let meshh = new THREE.Mesh(g, matt)
+    meshh.position.x = intersects[0].point.x
+    meshh.position.z = intersects[0].point.z
+    scene.add(meshh)
 
     //Inform Func
     t_.push(T)
@@ -150,6 +157,9 @@ var T = 0;
 let id_stack = []
 
 var animate = function () {
+
+  //Controls
+  controls.update();
 
   //Time
   const elapsedTime = clock.getElapsedTime();

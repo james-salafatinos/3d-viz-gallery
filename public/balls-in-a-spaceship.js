@@ -33,14 +33,16 @@ var toggle_balls_in_play = false;
 //     balls_in_play.push(mesh)
 // }
 
-let shoot_basic = function () {
+let shoot_basic = function (dirVector) {
     let geo = new THREE.SphereBufferGeometry(.2)
     let mat = new THREE.MeshBasicMaterial()
     let mesh = new THREE.Mesh(geo, mat)
     mesh.position.x = camera.position.x
     mesh.position.y = camera.position.y
     mesh.position.z = camera.position.z
+    mesh.userData.dirVector = dirVector
     balls_in_play.push(mesh)
+    
     scene.add(mesh)
 }
 
@@ -143,8 +145,15 @@ document.body.onkeyup = function (event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
+    let cameraLookDir = function (camera) {
+        var vector = new THREE.Vector3(0,0, -1);
+        vector.applyEuler(camera.rotation, camera.rotation.order);
+        
+        return vector;
+    }
+
     if (event.keyCode == 32) {
-        shoot_basic()
+        shoot_basic(cameraLookDir(camera))
         toggle_balls_in_play = true
     }
 
@@ -175,20 +184,15 @@ var animate = function () {
     //Controls
     controls.update();
 
-    let cameraLookDir = function (camera) {
-        var vector = new THREE.Vector3(0,0, -1);
-        vector.applyEuler(camera.rotation, camera.rotation.order);
-        
-        return vector;
-    }
 
-    console.log("Look Vector x,y,z", cameraLookDir(camera).x, cameraLookDir(camera).z, cameraLookDir(camera).y)
+    // console.log("Look Vector x,y,z", cameraLookDir(camera).x, cameraLookDir(camera).z, cameraLookDir(camera).y)
 
     if (toggle_balls_in_play) {
         balls_in_play.forEach(function (ball) {
-            ball.position.x += cameraLookDir(camera).x*.1;
-            ball.position.y += cameraLookDir(camera).y*.1;
-            ball.position.z += cameraLookDir(camera).z*.1;  // move for example in Z direction
+            ball.position.x += ball.userData.dirVector.x*.01;
+            ball.position.y += ball.userData.dirVector.y*.01;
+            ball.position.z += ball.userData.dirVector.z*.01;  // move for example in Z direction
+            // console.log(ball.geometry.parameters.radius)
         });
     }
     //Time

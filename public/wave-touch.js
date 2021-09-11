@@ -1,6 +1,8 @@
-import * as THREE from "https://cdn.skypack.dev/three";
-import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls";
-import macromanDatGui from 'https://cdn.skypack.dev/@macroman/dat.gui';
+// import * as THREE from "https://cdn.skypack.dev/three";
+import * as THREE from "/build/three.module.js"
+// import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from '/jsm/controls/OrbitControls'
+// import macromanDatGui from 'https://cdn.skypack.dev/@macroman/dat.gui';
 
 
 

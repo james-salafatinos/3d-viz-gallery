@@ -69,6 +69,38 @@ app.get("/ants", function (request, response) {
 
 
 
+app.get("/class", function (request, response) {
+  app.use('/build/three.module.js', express.static(path.join(__dirname, './node_modules/three/build/three.module.js')))
+  app.use('/jsm/controls/OrbitControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/OrbitControls.js')))
+  // app.use('/jsm/controls/PointerLockControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/PointerLockControls.js')))
+  response.sendFile(__dirname + "/views/class.html");
+});
+
+
+
+app.get("/billiards", function (request, response) {
+  app.use('/build/three.module.js', express.static(path.join(__dirname, './node_modules/three/build/three.module.js')))
+  app.use('/jsm/controls/OrbitControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/OrbitControls.js')))
+  // app.use('/jsm/controls/PointerLockControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/PointerLockControls.js')))
+  response.sendFile(__dirname + "/views/billiards.html");
+});
+
+app.get("/double_pendulum", function (request, response) {
+  app.use('/build/three.module.js', express.static(path.join(__dirname, './node_modules/three/build/three.module.js')))
+  app.use('/jsm/controls/OrbitControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/OrbitControls.js')))
+  // app.use('/jsm/controls/PointerLockControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/PointerLockControls.js')))
+  response.sendFile(__dirname + "/views/double_pendulum.html");
+});
+
+app.get("/particle_collision", function (request, response) {
+  app.use('/build/three.module.js', express.static(path.join(__dirname, './node_modules/three/build/three.module.js')))
+  app.use('/jsm/controls/OrbitControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/OrbitControls.js')))
+  // app.use('/jsm/controls/PointerLockControls', express.static(path.join(__dirname, '/node_modules/three/examples/jsm/controls/PointerLockControls.js')))
+  response.sendFile(__dirname + "/views/particle_collision.html");
+});
+
+
+
 
 //Listening with a link
 app.listen(port, () => {

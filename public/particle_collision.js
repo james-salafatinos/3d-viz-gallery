@@ -1,6 +1,7 @@
-import * as THREE from "/build/three.module.js"
-import { OrbitControls } from '/jsm/controls/OrbitControls'
-
+// import * as THREE from "/build/three.module.js"
+// import { OrbitControls } from '/jsm/controls/OrbitControls'
+import * as THREE from "https://cdn.skypack.dev/three";
+import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls";
 //Standard Setup
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
@@ -60,8 +61,8 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 camera.position.x = 11;
-camera.position.y = 10;
-camera.position.z = 20;
+camera.position.y = 40;
+camera.position.z = 50;
 scene.add(camera);
 
 // Controls
@@ -77,8 +78,10 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-//Re-draw Vertices
-const M = 6000
+
+
+
+const M = 5000
 
 
 
@@ -86,8 +89,6 @@ const M = 6000
 /**
  * Math
  */
-
-let dt;
 
 var vertices = [];
 var velocities = [];
@@ -100,7 +101,7 @@ var G = 1
 THREE.Vector3.prototype.randomUnitVector = function () {
     this.x = Math.random() * 2 - 1;
     this.y = Math.random() * 2 - 1;
-    this.z = 0//Math.random() * 2 - 1;
+    this.z = Math.random() * 2 - 1;
     this.normalize();
     return this;
 }
@@ -111,10 +112,9 @@ for (let iter = 0; iter <= M; iter += 1) {
     let V = new THREE.Vector3().randomUnitVector();
     vertices.push(V.x, V.y, V.z)
     velocities.push(V.x, V.y, V.z) //vx, vy, vz
-    accelerations.push(0, 0, 0) //ax, ay, az
+    accelerations.push(0, -.02, 0) //ax, ay, az
     masses.push(1, 1, 1)
 }
-
 
 const geometry = new THREE.BufferGeometry();
 geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
@@ -122,60 +122,6 @@ let material = new THREE.PointsMaterial({ size: .8, sizeAttenuation: true, alpha
 material.color.setHSL(.6, 0.8, 0.3);
 const particles = new THREE.Points(geometry, material);
 scene.add(particles);
-
-
-let checkIfNotDivisibleByThree = (set) => {
-    if (set.length % 3 != 0) {
-        return true
-    } else {
-        return false
-    }
-}
-
-let checkParticles = (vertices_set) => {
-
-    //Check validity of set
-    if (checkIfNotDivisibleByThree(vertices_set)) {
-        console.log("Error, vertex set is not divisible by three")
-        return RangeError
-    }
-
-    //Iterate through sets
-    for (let i = 0; i <= vertices_set.length; i += 3) {
-        let particle_set = [vertices_set[i], vertices_set[i + 1], vertices_set[i + 2]]
-        // console.log(particle_set)
-    }
-}
-
-// let N = 25
-// let softening = .01
-// let getAccelerations = () =>{
-//     for (let i = 0; i <= Array(N).length; i += 1) {
-//         for (let j = i; i <= Array(N).length; j += 1) {
-//             let dx = vertices[j] - vertices[i];
-//             let dy = vertices[j + 1] - vertices[i + 1];
-//             let dz = vertices[j + 1] - vertices[i + 2];
-//             // let inv_r3 = (dx ** 2 + dy ** 2 + dz ** 2 + softening ** 2) ** (-1.5);
-
-//             // accelerations[i] += G * (dx * inv_r3) * masses[j];
-//             // accelerations[i + 1] += G * (dy * inv_r3) * masses[j];
-//             // accelerations[i + 2] += G * (dz * inv_r3) * masses[j];
-//             console.log("Dx, dy,dz", dx,dy,dz)
-//         }
-//     }
-
-// }
-
-let getPosDifferentials = () => {
-    //dx
-    let dxs = [];
-    for (let i = 0; i <= vertices.length; i += 2) {
-        for (let j = i; i <= vertices.length; j += 2) {
-            // console.log(i,j)
-        }
-    }
-    return dxs
-}
 
 
 let spacing = 25;
@@ -231,7 +177,7 @@ function planeCollisionVector(_v1, planeMesh) {
     return d
 }
 
-var eps = .5
+var eps = .0001
 var collisionCheck = function () {
     for (let i = 0; i < vertices.length; i += 3) {
         let x = geometry.attributes.position.array[i]
@@ -241,53 +187,53 @@ var collisionCheck = function () {
         let vx = velocities[i]
         let vy = velocities[i + 1]
         let vz = velocities[i + 2]
+       
+        let scaler = 1
 
-
-        // if (i%10000 == 0){
-        //     console.log("X,Y,Z",i, x,y,z)
-        // }
-
-
-        let scaler = .6
-
-        if (Math.abs(y - top.position.y) < eps) {
+        if (y - top.position.y <= eps) {
             // console.log("hit a wall")
-
-            // console.log("TOP COLLISION!!!")
+            console.log('top')
+            // console.log("TOP COdLLISION!!!")
             let deltaPlane = planeCollisionVector(new THREE.Vector3(vx, vy, vz), top)
+            // console.log(vertices[i+1], top.position.y)
+            // vertices[i + 1] = top.position.y
             velocities[i] = deltaPlane.x * scaler
             velocities[i + 1] = deltaPlane.y * scaler
             velocities[i + 2] = deltaPlane.z * scaler
 
         }
 
-        if (Math.abs(y - bottom.position.y) < eps) {
+        if (y - bottom.position.y <= eps) {
             // console.log("BOTTOM COLLISION!!!")
             let deltaPlane = planeCollisionVector(new THREE.Vector3(vx, vy, vz), bottom)
+            // vertices[i + 1] = bottom.position.y
             velocities[i] = deltaPlane.x * scaler
             velocities[i + 1] = deltaPlane.y * scaler
             velocities[i + 2] = deltaPlane.z * scaler
         }
 
-        if (Math.abs(z - left.position.z) < eps) {
+        if (z - left.position.z <= eps) {
             // console.log("LEFT COLLISION!!!")
+            // vertices[i + 2] = left.position.z
             let deltaPlane = planeCollisionVector(new THREE.Vector3(vx, vy, vz), left)
             velocities[i] = deltaPlane.x * scaler
             velocities[i + 1] = deltaPlane.y * scaler
             velocities[i + 2] = deltaPlane.z * scaler
         }
 
-        if (Math.abs(z - right.position.z) < eps) {
+        if (z - right.position.z <= eps) {
             // console.log("RIGHT COLLISION!!!")
+            // vertices[i + 2] = right.position.z
             let deltaPlane = planeCollisionVector(new THREE.Vector3(vx, vy, vz), right)
             velocities[i] = deltaPlane.x * scaler
             velocities[i + 1] = deltaPlane.y * scaler
             velocities[i + 2] = deltaPlane.z * scaler
         }
 
-        if (Math.abs(x - left2.position.x) < eps) {
+        if (x - left2.position.x <= eps) {
             // // console.log("hit a wall")
             // console.log("LEFT2 COLLISION!!!")
+            // vertices[i] = left2.position.x
             let deltaPlane = planeCollisionVector(new THREE.Vector3(vx, vy, vz), left2)
             velocities[i] = deltaPlane.x * scaler
             velocities[i + 1] = deltaPlane.y * scaler
@@ -295,51 +241,148 @@ var collisionCheck = function () {
         }
 
 
-        if (Math.abs(x - right2.position.x) < eps) {
+        if (x - right2.position.x <= eps) {
             // console.log("RIGHT2 COLLISION!!!")
+            // console.log(vertices[i])
+            // vertices[i] = right2.position.x
+            // console.log(vertices[i])
             let deltaPlane = planeCollisionVector(new THREE.Vector3(vx, vy, vz), right2)
             velocities[i] = deltaPlane.x * scaler
             velocities[i + 1] = deltaPlane.y * scaler
             velocities[i + 2] = deltaPlane.z * scaler
         }
+
+        for (let j = i; j < vertices.length; j+=3) {
+
+            let x2 = geometry.attributes.position.array[j]
+            let y2 = geometry.attributes.position.array[j + 1]
+            let z2 = geometry.attributes.position.array[j + 2]
+    
+            let vx2 = velocities[i]
+            let vy2 = velocities[i + 1]
+            let vz2 = velocities[i + 2]
+    
+            let scaler = 1
+
+        
+     
+            if (i == j) {
+                //Do Nothing
+                // console.log('These are the same ball...')
+            }
+            else {
+                if (((x2 - x) ** 2 + (y2 - y) ** 2 + (z2 - z) ** 2) ** .5 < 2 * eps) {
+                    // console.log("Collision")
+                    // console.log('Pos', x2,y2,z2)
+                    let xyz2_pos = new THREE.Vector3(x2, x2, x2)
+                    let vxyz2_vector = new THREE.Vector3(vx2, vy2, vz2)
+
+                    let xyz1_pos = new THREE.Vector3(x, x, x)
+                    let vxyz1_vector = new THREE.Vector3(vx, vy, vz)
+                    // console.log('vector', vxyz1_vector)
+
+                    let delta1 = collisionVector(xyz1_pos, xyz2_pos, xyz1_pos, xyz2_pos)
+                    let delta2 = collisionVector(vxyz2_vector, vxyz1_vector, xyz2_pos, xyz1_pos)
+                    
+                    // console.log(delta1)
+                    // velocities[iter] = accelerations[iter]
+                    // velocities[iter + 1] = accelerations[iter + 1]
+                    // velocities[iter + 2] = accelerations[iter + 2]
+                    // console.log(velocities[i])
+                    velocities[i] += delta1.x 
+                    velocities[i + 1] = delta1.y 
+                    velocities[i + 2] = delta1.z 
+
+                    velocities[j] = delta2.x 
+                    velocities[j + 1] = delta2.y 
+                    velocities[j + 2] = delta2.z 
+                    // var colors = pointCloud.geometry.attributes.color.array;
+                    // console.log(material)
+                    // balls_in_play[i].material.color = new THREE.Color(`hsl(${2000 - delta1.length()*1000}, 100%, 50%)`);
+                    // balls_in_play[j].material.color = new THREE.Color(`hsl(${2000 - delta2.length()*1000}, 100%, 50%)`);
+                    
+            
+                }
+
+            }
+        //         if (((_x - x) ** 2 + (_y - y) ** 2 + (_z - z) ** 2) ** .5 < 2 * eps) {
+        //             let ball = balls_in_play[i].clone()
+        //             let ball_vector = new THREE.Vector3(ball.userData.dirVector.x, ball.userData.dirVector.y, ball.userData.dirVector.z)
+        //             let ball_pos = new THREE.Vector3(ball.position.x, ball.position.y, ball.position.z)
+
+        //             let ball2 = balls_in_play[j].clone()
+        //             let ball2_vector = new THREE.Vector3(ball2.userData.dirVector.x, ball2.userData.dirVector.y, ball2.userData.dirVector.z)
+        //             let ball2_pos = new THREE.Vector3(ball2.position.x, ball2.position.y, ball2.position.z)
+
+        //             let delta1 = collisionVector(ball_vector, ball2_vector, ball_pos, ball2_pos)
+        //             let delta2 = collisionVector(ball2_vector, ball_vector, ball2_pos, ball_pos)
+
+
+        //             velocities[i] = delta1.x
+        //             velocities[i+1] = delta1.y
+        //             velocities[i+2] = delta1.z
+        //             balls_in_play[j].userData.dirVector = delta2
+
+        //             // balls_in_play[i].material.color = new THREE.Color(`hsl(${2000 - delta1.length() * 1000}, 100%, 50%)`);
+        //             // balls_in_play[j].material.color = new THREE.Color(`hsl(${2000 - delta2.length() * 1000}, 100%, 50%)`);
+
+
+        //         } else {
+        //             //Do nothing
+        //         }
+
+        //     }
+        // }
     }
+}}
+
+
+function collisionVector(v1, v2, x1, x2) {
+    let d = v1.clone().sub(
+        ((x1.clone()).sub(x2.clone())).multiplyScalar(
+            ((v1.clone()).sub(v2.clone())).dot(
+                (x1.clone()).sub(x2.clone())
+            ) / (((x1.clone()).sub(x2.clone())).length() ** 2)))
+
+    return d
 }
 
-var TRACED_MAX_POINTS = 4000;
-// geometry
-var tracedGeometry = new THREE.BufferGeometry();
-// attributes
-var tracedPositions = new Float32Array(TRACED_MAX_POINTS * 3); // 3 vertices per point
-tracedGeometry.addAttribute('position', new THREE.BufferAttribute(tracedPositions, 3));
-// draw range
-let tracedDrawCount = 1000; // draw the first 2 points, only
-tracedGeometry.setDrawRange(0, tracedDrawCount);
-// material
-var lineMaterial = new THREE.LineBasicMaterial({ color: 0xff3212 });
-// line
-let tracedLine = new THREE.Line(tracedGeometry, lineMaterial);
-scene.add(tracedLine);
+
+// var TRACED_MAX_POINTS = 4000;
+// // geometry
+// var tracedGeometry = new THREE.BufferGeometry();
+// // attributes
+// var tracedPositions = new Float32Array(TRACED_MAX_POINTS * 3); // 3 vertices per point
+// tracedGeometry.addAttribute('position', new THREE.BufferAttribute(tracedPositions, 3));
+// // draw range
+// let tracedDrawCount = 1000; // \
+// tracedGeometry.setDrawRange(0, tracedDrawCount);
+// // material
+// var lineMaterial = new THREE.LineBasicMaterial({ color: 0xff3212 });
+// // line
+// let tracedLine = new THREE.Line(tracedGeometry, lineMaterial);
+// scene.add(tracedLine);
 
 
-var tracedX = 0;
-var tracedY = 0;
-var tracedZ = 0;
-var tracedIndex = 0;
-var tracedPositions = tracedLine.geometry.attributes.position.array;
-for (var i = 0, l = TRACED_MAX_POINTS; i < l; i++) {
-    tracedPositions[tracedIndex++] = tracedX;
-    tracedPositions[tracedIndex++] = tracedY;
-    tracedPositions[tracedIndex++] = tracedZ;
-}
+// var tracedX = 0;
+// var tracedY = 0;
+// var tracedZ = 0;
+// var tracedIndex = 0;
+// var tracedPositions = tracedLine.geometry.attributes.position.array;
+// for (var i = 0, l = TRACED_MAX_POINTS; i < l; i++) {
+//     tracedPositions[tracedIndex++] = tracedX;
+//     tracedPositions[tracedIndex++] = tracedY;
+//     tracedPositions[tracedIndex++] = tracedZ;
+// }
 
-let updateTracedPositions = (frameIndex, x2, y2,z2) => {
-    tracedPositions[frameIndex] = x2
-    tracedPositions[frameIndex + 1] = y2
-    tracedPositions[frameIndex + 2] = z2
+// let updateTracedPositions = (frameIndex, x2, y2,z2) => {
+//     tracedPositions[frameIndex] = x2
+//     tracedPositions[frameIndex + 1] = y2
+//     tracedPositions[frameIndex + 2] = z2
 
-    tracedLine.geometry.attributes.position.needsUpdate = true
+//     tracedLine.geometry.attributes.position.needsUpdate = true
 
-}
+// }
 
 let updatePositions = () => {
 
@@ -347,6 +390,7 @@ let updatePositions = () => {
         geometry.attributes.position.array[iter] += velocities[iter]
         geometry.attributes.position.array[iter + 1] += velocities[iter + 1]
         geometry.attributes.position.array[iter + 2] += velocities[iter + 2]
+
     }
 }
 
@@ -363,9 +407,6 @@ let updateVelocities = () => {
 let updateParticles = () => {
     updateVelocities()
     updatePositions()
-
-
-
 }
 
 // console.log(getPosDifferentials())
@@ -378,27 +419,21 @@ var animate = function () {
 
     //Controls
     controls.update();
-    if (frameIndex == 0) {
-        checkParticles(vertices)
-    }
 
-    // getAccelerations()
     collisionCheck()
     updateParticles()
-    // getAccelerations()
 
-    // console.log(vertices)
     geometry.attributes.position.needsUpdate = true;
 
-    if (frameIndex % 3 == 0 | frameIndex == 0) {
+    // if (frameIndex % 3 == 0 | frameIndex == 0) {
 
-        updateTracedPositions(frameIndex, Math.random()*20,Math.random()*20, Math.random())
-        // console.log(vertices[1], vertices[2])
-        // updateTracedPositions(frameIndex, x2, y2)
+    //     updateTracedPositions(frameIndex, Math.random()*20,Math.random()*20, Math.random())
+    //     // console.log(vertices[1], vertices[2])
+    //     // updateTracedPositions(frameIndex, x2, y2)
 
-        tracedGeometry.setDrawRange(1, tracedDrawCount);
-        tracedDrawCount += 1
-    }
+    //     tracedGeometry.setDrawRange(1, tracedDrawCount);
+    //     tracedDrawCount += 1
+    // }
     //Time
     const elapsedTime = clock.getElapsedTime();
 

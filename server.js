@@ -99,6 +99,12 @@ app.get("/particle_collision", function (request, response) {
   response.sendFile(__dirname + "/views/particle_collision.html");
 });
 
+app.get("/wikipedia-viz", function (request, response) {
+
+  app.use('/static', express.static('files'))
+  response.sendFile(__dirname + "/views/wikipedia-viz.html");
+});
+
 
 
 
